@@ -42,7 +42,7 @@ const Sidebar: React.FC = () => {
         },
     })
     return (
-        <aside className="fixed top-0 right-0 w-80 h-full bg-gray-100 p-4 shadow-lg overflow-y-auto z-50">
+        <aside className="fixed top-0 right-0 w-80 h-90% bg-gray-100 p-4 shadow-lg overflow-y-auto ">
             <GameHistory history={history} />
         </aside>
     );
