@@ -3,7 +3,7 @@ import React from 'react';
 import GameHistory from './ui/GameHistory';
 import { useState, useEffect } from 'react';
 import { chainToAddress, ContractAbi } from '../constants';
-import { useWatchContractEvent, useChainId, useConfig } from 'wagmi';
+import { useWatchContractEvent, useChainId, useConfig, useAccount } from 'wagmi';
 import { watchContractEvent } from '@wagmi/core'
 import { formatEther } from 'ethers';
 
@@ -15,34 +15,41 @@ const Sidebar: React.FC = () => {
     const addressContract = chainToAddress[chainId]['address'] as `0x${string}`;
     const [betAmount, setBetAmount] = useState<number | string>('');
     const [history, setHistory] = useState<{ address: string; result: "win" | "lose"; amount: string }[]>([
-        { address: '0x123...abc', result: 'win', amount: '0.5' },
-        { address: '0x456...def', result: 'lose', amount: '1.0' },
     ]);
+    const { address } = useAccount();
 
 
     useWatchContractEvent({
         address: addressContract,
         abi: ContractAbi,
+        args: { player: address },
         eventName: 'BetHistory',
         onLogs(logs) {
-            const log = logs[0].topics;
+            const log = logs[0]
+            console.log('BetHistory log:', log);
 
             // Decode values from topics
-            const rawAddress = log[1] ? '0x' + log[1].slice(26) : '0x0000000000000000000000000000000000000000'; // Default to zero address if undefined
-            const rawResult = log[2] ? BigInt(log[2]) : BigInt(0); // Default to BigInt(0) if undefined
-            const rawAmount = log[3] ? BigInt(log[3]) : BigInt(0); // Default to BigInt(0) if undefined
+            if ('args' in log) {
+                if (typeof log.args === 'object' && log.args !== null && 'player' in log.args && 'amount' in log.args && 'result' in log.args) {
+                    const rawAddress = log.args.player as string
+                    const rawResult = log.args.result as BigInt;//log.args.amount as BigInt
+                    const rawAmount = log.args.amount as BigInt; //log.args.result as BigInt;
+                    const formattedEntry = {
+                        address: `${rawAddress.slice(0, 6)}...${rawAddress.slice(-4)}`,
+                        result: rawResult === BigInt(0) ? ('win' as const) : ('lose' as const),
+                        amount: formatEther(rawAmount.toString()),
+                    };
 
-            const formattedEntry = {
-                address: `${rawAddress.slice(0, 6)}...${rawAddress.slice(-4)}`,
-                result: rawResult === BigInt(0) ? ('win' as const) : ('lose' as const),
-                amount: formatEther(rawAmount),
-            };
+                    setHistory((prev) => [...prev, formattedEntry]);
+                } else {
+                    console.error('Logs[0].args does not contain MaxBet:');
+                }
 
-            setHistory((prev) => [...prev, formattedEntry]);
+            }
         },
     })
     return (
-        <aside className="fixed top-0 right-0 w-80 h-90% bg-gray-100 p-4 shadow-lg overflow-y-auto ">
+        <aside className="w-80 h-screen bg-gray-100 p-4 shadow-lg overflow-y-auto">
             <GameHistory history={history} />
         </aside>
     );

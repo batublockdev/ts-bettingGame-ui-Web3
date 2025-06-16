@@ -38,22 +38,24 @@ const NumericInputField: React.FC<NumericInputFieldProps> = ({
     };
 
     return (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col items-center gap-1">
             <label className="text-sm font-medium text-gray-700">{label}</label>
             <input
                 type="number"
                 placeholder={placeholder}
                 value={value}
                 onChange={handleChange}
-                className={`border rounded-lg px-3 py-2 focus:outline-none transition-all ${isInvalid
-                    ? 'border-red-500 ring-2 ring-red-400'
-                    : 'border-gray-300 focus:ring-2 focus:ring-blue-500'
+                className={`w-32 border rounded-lg px-3 py-1 focus:outline-none transition-all text-center
+            ${isInvalid
+                        ? 'border-red-500 ring-2 ring-red-400'
+                        : 'border-gray-300 focus:ring-2 focus:ring-blue-500'
                     }`}
             />
             {isInvalid && (
-                <p className="text-sm text-red-600">Value must be ≤ {maxValue}</p>
+                <p className="text-sm text-red-600 text-center">Value must be ≤ {maxValue}</p>
             )}
         </div>
+
     );
 };
 

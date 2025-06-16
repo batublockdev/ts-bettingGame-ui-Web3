@@ -4,7 +4,7 @@ export default function Header() {
     return (
         <div style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             alignItems: 'center',
             padding: '1rem 2rem',
             backgroundColor: '#f8f9fa',
@@ -12,13 +12,6 @@ export default function Header() {
             width: '100%',
             boxSizing: 'border-box'
         }}>
-            <div style={{
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                color: '#333'
-            }}>
-                My Web3 App
-            </div>
             <ConnectButton />
         </div>);
 }

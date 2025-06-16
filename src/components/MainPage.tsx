@@ -6,6 +6,10 @@ import { useWatchContractEvent, useChainId, useConfig } from 'wagmi';
 import { watchContractEvent } from '@wagmi/core'
 import { formatEther, ethers } from 'ethers';
 import { getEthersProvider } from '../Ether-Wagmi';
+import Header from '@/components/Header';
+import Card from "./ui/card"
+import BetButtons from './BetButtons';
+
 
 export default function MainPage() {
     enum Bet_State {
@@ -55,6 +59,8 @@ export default function MainPage() {
                 const gameIdx = lastEventx.args[0]
                 setMaxBet(Number(formatEther((gameIdx))))
                 console.log('args:', formatEther((gameIdx)))
+                console.log('args:', lastEventx)
+
 
             } else {
                 console.error('Event does not have args:', lastEvent)
@@ -71,6 +77,16 @@ export default function MainPage() {
         eventName: 'State_Bet',
         onLogs(Logs) {
             console.log('old logs!', Logs)
+            if ('args' in Logs[0]) {
+                if (typeof Logs[0].args === 'object' && Logs[0].args !== null && 'betState' in Logs[0].args) {
+                    const GameState = Logs[0].args.betState as BigInt;
+                    setGameState(Number(GameState));
+                    console.log('args:', Number(GameState));
+                } else {
+                    console.error('Logs[0].args does not contain betState:', Logs[0].args);
+                }
+
+            }
         },
     });
 
@@ -80,11 +96,23 @@ export default function MainPage() {
         eventName: 'Max_Bet',
         onLogs(Logs) {
             console.log('old logs!', Logs)
+            if ('args' in Logs[0]) {
+                if (typeof Logs[0].args === 'object' && Logs[0].args !== null && 'MaxBet' in Logs[0].args) {
+                    const MaxBet = Logs[0].args.MaxBet as BigInt;
+                    setMaxBet(Number(formatEther(Number(MaxBet))))
+                    console.log('args:', formatEther(Number(MaxBet)))
+                } else {
+                    console.error('Logs[0].args does not contain MaxBet:', Logs[0].args);
+                }
+
+            }
         },
     });
 
     return (
-        <div>
+        <div className="flex-1">
+            <Header />
+
             <main style={{ padding: '2rem', textAlign: 'center' }}>
                 {gameState === 1 ? (
                     <>
@@ -95,6 +123,7 @@ export default function MainPage() {
                     <>
                         <h1>Welcome to the Betting Game</h1>
                         <p>Connect your wallet to start playing!</p>
+                        <Card value={2} />
                         <NumericInputField
                             label="Enter your bet amount"
                             placeholder="0.00"
@@ -102,6 +131,9 @@ export default function MainPage() {
                             onChange={setBetAmount}
                             maxValue={maxBet}
                         />
+
+                        <BetButtons number={Number(betAmount)} />
+
                     </>
                 ) : gameState === 2 ? (
                     <>
