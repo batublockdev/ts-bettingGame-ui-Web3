@@ -2,9 +2,9 @@
 import NumericInputField from '../components/ui/Inputfield';
 import { useState, useEffect } from 'react';
 import { chainToAddress, ContractAbi } from '../constants';
-import { useWatchContractEvent, useChainId, useConfig } from 'wagmi';
+import { useWatchContractEvent, useChainId, useConfig, useWriteContract } from 'wagmi';
 import { watchContractEvent } from '@wagmi/core'
-import { formatEther, ethers } from 'ethers';
+import { formatEther, ethers, parseEther } from 'ethers';
 import { getEthersProvider } from '../Ether-Wagmi';
 import Header from '@/components/Header';
 import Card from "./ui/card"
@@ -20,6 +20,8 @@ export default function MainPage() {
     }
     const [betAmount, setBetAmount] = useState<number | string>('');
     const [maxBet, setMaxBet] = useState<number>(0);
+    const [CurrentNumber, setCurrentNumber] = useState<number>(0);
+    const { data: hash, isPending, error, writeContractAsync } = useWriteContract()
     const [gameState, setGameState] = useState<number>(Bet_State.OPEN);
     const chainId = useChainId();
     const config = useConfig();
@@ -65,7 +67,20 @@ export default function MainPage() {
             } else {
                 console.error('Event does not have args:', lastEvent)
             }
+            // Optional: define a filter for your event
+            const filterCurrentCard = contract.filters.CurrentCard() // event name from ABI
 
+            // Fetch past logs from block 0 to latest
+            const eventsCurrentCard = await contract.queryFilter(filterCurrentCard, 0, 'latest')
+            const lastEventCurrentCard = eventsCurrentCard[eventsCurrentCard.length - 1];
+            if ('args' in lastEventCurrentCard) {
+                const card = lastEventCurrentCard.args[0]
+                setCurrentNumber(Number((card)));
+
+
+            } else {
+                console.error('Event does not have args:', lastEventCurrentCard)
+            }
 
         }
         getPastEvents();
@@ -89,7 +104,24 @@ export default function MainPage() {
             }
         },
     });
+    useWatchContractEvent({
+        address: addressContract,
+        abi: ContractAbi,
+        eventName: 'CurrentCard',
+        onLogs(Logs) {
+            console.log('old logs!', Logs)
+            if ('args' in Logs[0]) {
+                if (typeof Logs[0].args === 'object' && Logs[0].args !== null && 'card' in Logs[0].args) {
+                    const card = Logs[0].args.card as BigInt;
+                    setCurrentNumber(Number(card));
+                    console.log('args:', Number(card))
+                } else {
+                    console.error('Logs[0].args does not contain MaxBet:', Logs[0].args);
+                }
 
+            }
+        },
+    });
     useWatchContractEvent({
         address: addressContract,
         abi: ContractAbi,
@@ -108,7 +140,18 @@ export default function MainPage() {
             }
         },
     });
-
+    const handleBet = async (choice: number) => {
+        console.log(`User bet: ${choice} (current number: ${parseEther(betAmount.toString())})`);
+        await writeContractAsync({
+            abi: ContractAbi,
+            address: addressContract,
+            functionName: "bet",
+            args: [
+                choice,
+                parseEther(betAmount.toString()),
+            ],
+        })
+    };
     return (
         <div className="flex-1">
             <Header />
@@ -123,7 +166,7 @@ export default function MainPage() {
                     <>
                         <h1>Welcome to the Betting Game</h1>
                         <p>Connect your wallet to start playing!</p>
-                        <Card value={2} />
+                        <Card value={CurrentNumber} />
                         <NumericInputField
                             label="Enter your bet amount"
                             placeholder="0.00"
@@ -132,7 +175,7 @@ export default function MainPage() {
                             maxValue={maxBet}
                         />
 
-                        <BetButtons number={Number(betAmount)} />
+                        <BetButtons handleBet={handleBet} />
 
                     </>
                 ) : gameState === 2 ? (
