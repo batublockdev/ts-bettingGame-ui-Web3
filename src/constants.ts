@@ -9,7 +9,7 @@ export const chainToAddress: ContractsConfig = {
         address: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'
     },
     11155111: {
-        address: '0x3b7f2d6d5b9c4e2f8b5a1d3e1c5c6f7a8b9c0d1e'
+        address: '0x0DfD5C56F7e4fA2f8aE480edAecbBfD5096B212d'
     }
 }
 
@@ -242,6 +242,19 @@ export const ContractAbi = [
     },
     {
         "type": "function",
+        "name": "getOwnersList",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "address[]",
+                "internalType": "address[]"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
         "name": "getOwners_legth",
         "inputs": [],
         "outputs": [
@@ -433,6 +446,25 @@ export const ContractAbi = [
         "inputs": [
             {
                 "name": "MaxBet",
+                "type": "uint256",
+                "indexed": true,
+                "internalType": "uint256"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "NewOwner",
+        "inputs": [
+            {
+                "name": "owner",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "amountInvested",
                 "type": "uint256",
                 "indexed": true,
                 "internalType": "uint256"

@@ -84,6 +84,23 @@ export default function MainPage() {
 
         }
         getPastEvents();
+
+        async function getPastEventsx() {
+            const provider = getEthersProvider(config)
+            if (!provider) throw new Error('No provider found')
+
+
+            const contract = new ethers.Contract(addressContract, ContractAbi, provider);
+
+            const card = await contract.getPreviousCard();
+            console.log('card:', card);
+            setCurrentNumber(Number(card));
+
+
+        }
+        getPastEventsx();
+
+
     }, [addressContract, config]);
 
     useWatchContractEvent({
