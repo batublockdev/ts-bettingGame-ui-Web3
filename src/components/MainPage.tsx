@@ -26,79 +26,41 @@ export default function MainPage() {
     const chainId = useChainId();
     const config = useConfig();
     const addressContract = chainToAddress[chainId]['address'] as `0x${string}`;
-
+    const provider = getEthersProvider(config)
+    if (!provider) throw new Error('No provider found')
+    const contract = new ethers.Contract(addressContract, ContractAbi, provider);
 
     useEffect(() => {
-        async function getPastEvents() {
+
+        async function getBet_StateEvent() {
             const provider = getEthersProvider(config)
             if (!provider) throw new Error('No provider found')
+            const contract = new ethers.Contract(addressContract, ContractAbi, provider);
 
+            const listOwner = await contract.getOwnersList();
+            const state = await contract.getBet_State();
+            console.log('State:', state);
+            setGameState(Number(state))
 
-            const contract = new ethers.Contract(addressContract, ContractAbi, provider)
-
-            // Optional: define a filter for your event
-            const filter = contract.filters.State_Bet() // event name from ABI
-
-            // Fetch past logs from block 0 to latest
-            const events = await contract.queryFilter(filter, 0, 'latest')
-            const lastEvent = events[events.length - 1];
-            if ('args' in lastEvent) {
-                const gameId = lastEvent.args[0]
-                setGameState(Number(gameId))
-                console.log('args:', Number(gameId))
-
-            } else {
-                console.error('Event does not have args:', lastEvent)
-            }
-
-            // Optional: define a filter for your event
-            const filterMax_Bet = contract.filters.Max_Bet() // event name from ABI
-
-            // Fetch past logs from block 0 to latest
-            const eventsMax_Bet = await contract.queryFilter(filterMax_Bet, 0, 'latest')
-            const lastEventx = eventsMax_Bet[eventsMax_Bet.length - 1];
-            if ('args' in lastEventx) {
-                const gameIdx = lastEventx.args[0]
-                setMaxBet(Number(formatEther((gameIdx))))
-                console.log('args:', formatEther((gameIdx)))
-                console.log('args:', lastEventx)
-
-
-            } else {
-                console.error('Event does not have args:', lastEvent)
-            }
-            // Optional: define a filter for your event
-            const filterCurrentCard = contract.filters.CurrentCard() // event name from ABI
-
-            // Fetch past logs from block 0 to latest
-            const eventsCurrentCard = await contract.queryFilter(filterCurrentCard, 0, 'latest')
-            const lastEventCurrentCard = eventsCurrentCard[eventsCurrentCard.length - 1];
-            if ('args' in lastEventCurrentCard) {
-                const card = lastEventCurrentCard.args[0]
-                setCurrentNumber(Number((card)));
-
-
-            } else {
-                console.error('Event does not have args:', lastEventCurrentCard)
-            }
 
         }
-        getPastEvents();
+        getBet_StateEvent();
 
-        async function getPastEventsx() {
-            const provider = getEthersProvider(config)
-            if (!provider) throw new Error('No provider found')
-
-
-            const contract = new ethers.Contract(addressContract, ContractAbi, provider);
+        async function getPreviousCardEvent() {
 
             const card = await contract.getPreviousCard();
             console.log('card:', card);
             setCurrentNumber(Number(card));
 
+        }
+        getPreviousCardEvent();
+        async function getCurrentMaxBet() {
+            const MaxBet = await contract.getMaxtoBet();
+            console.log('Maxbet:', MaxBet);
+            setMaxBet(Number(formatEther((MaxBet))))
 
         }
-        getPastEventsx();
+        getCurrentMaxBet();
 
 
     }, [addressContract, config]);
