@@ -29,7 +29,7 @@ A fully on-chain betting dApp that uses **Chainlink VRF** for randomness, **Ethe
 
 | Contract         | Description                        | Address     |
 |------------------|------------------------------------|-------------|
-| `BettingGame.sol` | Main contract for placing and resolving bets | `0xYourContractAddressHere` |
+| `BettingGame.sol` | Main contract for placing and resolving bets | `0x0DfD5C56F7e4fA2f8aE480edAecbBfD5096B212d` |
 
 Source code: [`/contracts`](https://github.com/batublockdev/Chainlink-Betting-Game-v2)  
 Deployed with: [Sepolia](https://sepolia.etherscan.io/address/0x0dfd5c56f7e4fa2f8ae480edaecbbfd5096b212d)
