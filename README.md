@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# 🎲 Decentralized Betting Game
 
-First, run the development server:
+A fully on-chain betting dApp that uses **Chainlink VRF** for randomness, **Ethers.js** for smart contract interaction, and **Next.js** for the frontend. Users can place bets, view results in real time, and trust the outcome thanks to verifiable randomness.
 
+---
+
+## 🚀 Features
+
+- 🧠 **Smart Contracts** built with Foundry (Solidity)
+- 🎲 **Provably fair bets** using Chainlink VRF
+- 🔄 **Real-time UI updates** with Ethers.js + Wagmi
+- 🦊 Wallet integration via Metamask & WalletConnect (RainbowKit)
+- 🧾 Event history and transparent on-chain gameplay
+
+---
+
+## 🏗️ Tech Stack
+
+- **Frontend**: Next.js, React, TailwindCSS, TypeScript
+- **Web3**: Ethers.js, Wagmi, RainbowKit
+- **Contracts**: Solidity, Foundry
+- **Randomness**: Chainlink VRF
+- **Testnet**: Sepolia
+
+---
+
+## 📦 Smart Contracts
+
+| Contract         | Description                        | Address     |
+|------------------|------------------------------------|-------------|
+| `BettingGame.sol` | Main contract for placing and resolving bets | `0xYourContractAddressHere` |
+
+Source code: [`/contracts`](https://github.com/batublockdev/Chainlink-Betting-Game-v2)  
+Deployed with: [Sepolia](https://sepolia.etherscan.io/address/0x0dfd5c56f7e4fa2f8ae480edaecbbfd5096b212d)
+
+---
+
+## 🧪 How to Run Locally
+
+### 1. Clone the Repo
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/chainlink-betting-game.git
+cd chainlink-betting-game
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Set Up Env Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file:
 
-## Learn More
+```env
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
+NEXT_PUBLIC_CONTRACT_ADDRESS=0xYourContractAddress
+NEXT_PUBLIC_CHAIN_ID=11155111
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Run the App
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🧠 Gameplay Logic
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. User places a bet by selecting a number.
+2. Smart contract stores the bet and requests randomness via Chainlink VRF.
+3. Chainlink returns the random number and settles the bet.
+4. Result is emitted and shown in real time on the frontend.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📸 Screenshots
+
+_Add images or GIFs here of your dApp in action._
+
+---
+
+## 🔐 Security
+
+- Chainlink VRF for verifiable randomness
+- Smart contracts tested using Foundry and Anvil
+- Frontend uses Ethers.js event listeners to reduce trust on backend
+
+---
+
+## 📄 License
+
+MIT
