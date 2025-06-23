@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <div className="flex">
-      <InvestorsAside addresses={['0x']} />
+      <InvestorsAside />
       <MainPage />
       <Sidebar />
     </div>

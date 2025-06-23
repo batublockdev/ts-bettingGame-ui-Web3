@@ -14,7 +14,7 @@ interface GameHistoryProps {
 const GameHistory: React.FC<GameHistoryProps> = ({ history }) => {
     return (
         <div>
-            <h2 className="text-lg font-semibold mb-4">Game History</h2>
+            <h2 className="text-lg font-semibold mb-4">Game history latest 500 blocks</h2>
             {history.length === 0 && <p>No game history yet.</p>}
             {history.map((entry, index) => (
                 <HistoryItem

@@ -120,17 +120,36 @@ export default function MainPage() {
         },
     });
     const handleBet = async (choice: number) => {
+        // Validate wallet connection
+        if (!addressContract) {
+            alert("Please connect your wallet before placing a bet.");
+            return;
+        }
+
+        // Validate bet amount
+        if (!betAmount || parseFloat(betAmount.toString()) <= 0) {
+            alert("Please enter a valid bet amount greater than 0.");
+            return;
+        }
+
         console.log(`User bet: ${choice} (current number: ${parseEther(betAmount.toString())})`);
-        await writeContractAsync({
-            abi: ContractAbi,
-            address: addressContract,
-            functionName: "bet",
-            args: [
-                choice,
-                parseEther(betAmount.toString()),
-            ],
-        })
+
+        try {
+            await writeContractAsync({
+                abi: ContractAbi,
+                address: addressContract,
+                functionName: "bet",
+                args: [
+                    choice,
+                    parseEther(betAmount.toString()),
+                ],
+            });
+        } catch (error) {
+            console.error("Bet failed:", error);
+            alert("Transaction failed. Please try again.");
+        }
     };
+
     return (
         <div className="flex-1">
             <Header />
@@ -159,8 +178,46 @@ export default function MainPage() {
                     </>
                 ) : gameState === 2 ? (
                     <>
-                        <h1>Welcome to the Betting Game</h1>
-                        <p>Cox</p>
+                        <h1 className="text-center text-xl font-bold mb-4">Betting Game is calculating</h1>
+                        <div className="flex justify-center items-center">
+                            <div className="spinner w-16 h-16">
+                                <svg
+                                    viewBox="0 0 58 58"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-full h-full text-gray-700"
+                                >
+                                    <g fill="none" fillRule="evenodd">
+                                        <g transform="translate(2 1)" stroke="currentColor" strokeWidth="1.5">
+                                            <circle cx="42.601" cy="11.462" r="5" fillOpacity="1" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="1;0;0;0;0;0;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="49.063" cy="27.063" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;1;0;0;0;0;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="42.601" cy="42.663" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;1;0;0;0;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="27" cy="49.125" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;0;1;0;0;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="11.399" cy="42.663" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;0;0;1;0;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="4.938" cy="27.063" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;0;0;0;1;0;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="11.399" cy="11.462" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;0;0;0;0;1;0" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                            <circle cx="27" cy="5" r="5" fillOpacity="0" fill="currentColor">
+                                                <animate attributeName="fill-opacity" begin="0s" dur="1.3s" values="0;0;0;0;0;0;0;1" calcMode="linear" repeatCount="indefinite" />
+                                            </circle>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
 
                     </>
                 ) : (
