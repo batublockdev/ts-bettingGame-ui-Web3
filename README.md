@@ -2,9 +2,11 @@
 # 🎲 Decentralized Betting Game
 
 A fully on-chain betting dApp that uses **Chainlink VRF** for randomness, **Ethers.js** for smart contract interaction, and **Next.js** for the frontend. Users can place bets, view results in real time, and trust the outcome thanks to verifiable randomness.
+
+
  **See the contract**: [GITHUB](https://github.com/batublockdev/Chainlink-Betting-Game-v2)  
-🌐 **Live App**: [https://ts-betting-game-ui-web3.vercel.app](https://ts-betting-game-ui-web3.vercel.app/)  
-📹 **Demo Video**: [Watch on YouTube](https://youtu.be/irOV2GThzA4) <!-- Replace with your actual video link -->
+ **Live App**: [https://ts-betting-game-ui-web3.vercel.app](https://ts-betting-game-ui-web3.vercel.app/)  
+ **Demo Video**: [Watch on YouTube](https://youtu.be/irOV2GThzA4) <!-- Replace with your actual video link -->
 ---
 
 ## 🚀 Features
